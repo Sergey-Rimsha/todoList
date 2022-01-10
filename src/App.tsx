@@ -1,27 +1,56 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
-import {Todolist} from "./Todolist";
+import {Todolist} from './Todolist';
+
+export type FilterType = 'All' | 'Active' | 'Completed'
+
+export type TaskType = {
+	id: number
+	title: string
+	isDone: boolean
+}
+
+function App() {
+
+    const tasks1 = [
+        { id: 1, title: "HTML&CSS", isDone: true },
+        { id: 2, title: "JS", isDone: true },
+        { id: 3, title: "ReactJS", isDone: false }
+    ]
+
+	const [tasks, setTask] = useState(tasks1)
+	const [filter, setFilter] = useState<FilterType>('All')
+
+	let filteredT = tasks
+
+	if (filter === 'Active') {
+		filteredT = tasks.filter(f => f.isDone)
+	}
+	if (filter === 'Completed') {
+		filteredT = tasks.filter(f => !f.isDone)
+	}
+
+	const removeTasks = (TasksId: number) => {
+		setTask(tasks.filter(f => f.id !== TasksId))
+		// console.log(TasksId)
+	}
+
+	const filteredTasks = (filterTask: FilterType) => {
+		setFilter(filterTask)
+	}
 
 
-let arrForTodolist1=[
-	{id:1, title:'HTML&CSS', isDone:false},
-	{id:2, title:'JS', isDone:true},
-	{id:3, title:'React', isDone:false},
-];
 
-let arrForTodolist2=[
-	{id:1, title:'HTML&CSS22222', isDone:true},
-	{id:2, title:'JS22222', isDone:false},
-	{id:3, title:'React222222', isDone:true},
-];
-
-
-export const App = () => {
     return (
         <div className="App">
-            <Todolist ogurec={'What to learn111'} arrForTodolist1={arrForTodolist1} />
-            <Todolist pom={'What to learn222'} arrForTodolist1={arrForTodolist2} />
-            {/*<Todolist ogurec={`What to learn`}/>*/}
+            <Todolist
+				title="What to learn"
+				tasks={filteredT}
+				removeTasks ={removeTasks}
+				filteredTasks={filteredTasks}
+			/>
         </div>
     );
 }
+
+export default App;
