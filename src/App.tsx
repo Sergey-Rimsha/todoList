@@ -1,54 +1,58 @@
 import React, {useState} from 'react';
 import './App.css';
 import {Todolist} from './Todolist';
+import {v1} from "uuid";
 
-export type FilterType = 'All' | 'Active' | 'Completed'
-
+export type FilterType = 'All' | 'Active' | "Completed"
 export type TaskType = {
-	id: number
+	id: string
 	title: string
 	isDone: boolean
 }
 
 function App() {
 
-    const tasks1 = [
-        { id: 1, title: "HTML&CSS", isDone: true },
-        { id: 2, title: "JS", isDone: true },
-        { id: 3, title: "ReactJS", isDone: false }
-    ]
+    const [tasks, setTask] = useState([
+        {id: v1(), title: "HTML&CSS", isDone: true},
+        {id: v1(), title: "JS", isDone: true},
+        {id: v1(), title: "ReactJS", isDone: false}
+    ])
 
-	const [tasks, setTask] = useState(tasks1)
-	const [filter, setFilter] = useState<FilterType>('All')
 
-	let filteredT = tasks
+    const [filter, setFilter] = useState('All')
 
-	if (filter === 'Active') {
-		filteredT = tasks.filter(f => f.isDone)
+    let filteredT = tasks
+    if (filter === 'Active') {
+        filteredT = tasks.filter(f => f.isDone)
+    }
+    if (filter === "Completed") {
+        filteredT = tasks.filter(f => !f.isDone)
+    }
+
+    const filteredTasks = (filterValue: FilterType) => {
+        console.log(filterValue)
+        setFilter(filterValue)
+    }
+
+    const removeTasks = (taskID: string) => {
+        console.log(taskID)
+        setTask(tasks.filter(f=>f.id!==taskID))
+    }
+
+	const addTask = (title: string) => {
+		let newTask = {id: v1(), title: title, isDone: false}
+		setTask([newTask, ...tasks]);
 	}
-	if (filter === 'Completed') {
-		filteredT = tasks.filter(f => !f.isDone)
-	}
-
-	const removeTasks = (TasksId: number) => {
-		setTask(tasks.filter(f => f.id !== TasksId))
-		// console.log(TasksId)
-	}
-
-	const filteredTasks = (filterTask: FilterType) => {
-		setFilter(filterTask)
-	}
-
-
 
     return (
         <div className="App">
             <Todolist
-				title="What to learn"
-				tasks={filteredT}
-				removeTasks ={removeTasks}
-				filteredTasks={filteredTasks}
-			/>
+                title="What to learn"
+                tasks={filteredT}
+                removeTasks={removeTasks}
+                filteredTasks={filteredTasks}
+				addTask={addTask}
+            />
         </div>
     );
 }
