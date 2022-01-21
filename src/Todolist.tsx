@@ -31,7 +31,7 @@ export function Todolist(props: PropsType) {
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
 
-		// проверяем что-бы небыло пробелов при вводе данных 
+		// проверяем что-бы небыло пробелов при вводе данных
 
 		let changeText = e.currentTarget.value;
 		if (changeText[changeText.length - 1] !== ' ') {
