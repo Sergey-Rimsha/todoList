@@ -1,5 +1,6 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import {FilterType, TaskType} from "./App";
+import {Button} from "./components/Button";
 
 type PropsType = {
     title: string
@@ -29,7 +30,14 @@ export function Todolist(props: PropsType) {
     // }
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setTitle(e.currentTarget.value)
+
+		// проверяем что-бы небыло пробелов при вводе данных 
+
+		let changeText = e.currentTarget.value;
+		if (changeText[changeText.length - 1] !== ' ') {
+			setTitle(changeText)
+		}
+        // setTitle(changeText)
     }
 
     const onClickHandler = () => {
@@ -58,13 +66,13 @@ export function Todolist(props: PropsType) {
         <h3>{props.title}</h3>
         <div>
             <input onKeyPress={onKeyPressHandler} value={title} onChange={onChangeHandler}/>
-            <button onClick={onClickHandler}>+</button>
+			<Button name={'+'} callback={onClickHandler}/>
         </div>
         <ul>
             {props.tasks.map((t, i) => {
                 return (
                     <li key={i}>
-                        <button onClick={()=>removeTaskHandler(t.id)}>X</button>
+						<Button name={'X'} callback={()=>removeTaskHandler(t.id)}/>
                         <input type="checkbox" checked={t.isDone}/>
                         <span>{t.title}</span>
 
@@ -73,9 +81,9 @@ export function Todolist(props: PropsType) {
             })}
         </ul>
         <div>
-            <button onClick={()=>onClickFilterHandler('All')}>All</button>
-            <button onClick={()=>onClickFilterHandler('Active')}>Active</button>
-            <button onClick={()=>onClickFilterHandler('Completed')}>Completed</button>
-        </div>
+        	<Button name={'All'} callback={()=>onClickFilterHandler('All')}/>
+			<Button name={'Active'} callback={()=>onClickFilterHandler('Active')}/>
+			<Button name={'Completed'} callback={()=>onClickFilterHandler('Completed')}/>
+		</div>
     </div>
 }
