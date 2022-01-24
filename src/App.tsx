@@ -1,57 +1,61 @@
 import React, {useState} from 'react';
 import './App.css';
 import {Todolist} from './Todolist';
-import {v1} from "uuid";
+import {v1} from 'uuid';
 
-export type FilterType = 'All' | 'Active' | "Completed"
-export type TaskType = {
-	id: string
-	title: string
-	isDone: boolean
-}
+export type FilterValuesType = "all" | "active" | "completed";
 
 function App() {
 
-    const [tasks, setTask] = useState([
+    let [tasks, setTasks] = useState([
         {id: v1(), title: "HTML&CSS", isDone: true},
         {id: v1(), title: "JS", isDone: true},
-        {id: v1(), title: "ReactJS", isDone: false}
-    ])
+        {id: v1(), title: "ReactJS", isDone: false},
+        {id: v1(), title: "Rest API", isDone: false},
+        {id: v1(), title: "GraphQL", isDone: false},
+    ]);
 
-
-    const [filter, setFilter] = useState('All')
-
-    let filteredT = tasks
-    if (filter === 'Active') {
-        filteredT = tasks.filter(f => f.isDone)
-    }
-    if (filter === "Completed") {
-        filteredT = tasks.filter(f => !f.isDone)
+    const CheckBoxChangeStatus = (id: string, value: boolean) => {
+        setTasks(tasks.map(m => (m.id === id ? {...m, isDone:value} : m)))
     }
 
-    const filteredTasks = (filterValue: FilterType) => {
-        console.log(filterValue)
-        setFilter(filterValue)
+    function removeTask(id: string) {
+        let filteredTasks = tasks.filter(t => t.id !== id);
+        setTasks(filteredTasks);
     }
 
-    const removeTasks = (taskID: string) => {
-        console.log(taskID)
-        setTask(tasks.filter(f=>f.id!==taskID))
+    function addTask(title: string) {
+        let task = {id: v1(), title: title, isDone: false};
+        let newTasks = [task, ...tasks];
+        setTasks(newTasks);
     }
 
-	const addTask = (title: string) => {
-		let newTask = {id: v1(), title: title, isDone: false}
-		setTask([newTask, ...tasks]);
-	}
+    let [filter, setFilter] = useState<FilterValuesType>("all");
+
+    let tasksForTodolist = tasks;
+
+    if (filter === "active") {
+        tasksForTodolist = tasks.filter(t => t.isDone === false);
+    }
+    if (filter === "completed") {
+        tasksForTodolist = tasks.filter(t => t.isDone === true);
+    }
+
+    function changeFilter(value: FilterValuesType) {
+        setFilter(value);
+    }
+
 
     return (
         <div className="App">
             <Todolist
                 title="What to learn"
-                tasks={filteredT}
-                removeTasks={removeTasks}
-                filteredTasks={filteredTasks}
-				addTask={addTask}
+                tasks={tasksForTodolist}
+                removeTask={removeTask}
+                changeFilter={changeFilter}
+                addTask={addTask}
+                CheckBoxChangeStatus={CheckBoxChangeStatus}
+                filter={filter}
             />
         </div>
     );
