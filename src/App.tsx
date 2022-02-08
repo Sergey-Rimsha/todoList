@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import './App.css';
-import TodoList from "./TodoList";
+import TodoList from "./commponents/TodoList/TodoList";
 import {v1} from "uuid";
+import {AddItemForm} from "./commponents/AddItemForm";
 // C
 // R
 // U
@@ -92,6 +93,16 @@ const App = () => {
     }
 
 
+	const changeTaskTitle = (taskID: string, title: string, todoListID: string) => {
+
+		setTasks({...tasks, [todoListID]: tasks[todoListID].map(t => t.id === taskID ? {...t, title} : t)})
+	}
+
+	const changeTodolistTitle = (title: string, todoListID: string) => {
+		setTodoLists([...todoLists].map(t => t.id === todoListID ? {...t, title} : t));
+	}
+
+
     const changeFilter = (filter: FilterValuesType, todoListID: string) => {
 
         const upDatedTodoList = todoLists.map(tl => tl.id === todoListID ? {...tl, filter: filter} : tl)
@@ -131,16 +142,29 @@ const App = () => {
                 addTask={addTask}
                 changeTaskStatus={changeTaskStatus}
                 removeTodolist={removeTodolist}
+				changeTaskTitle={changeTaskTitle}
+				changeTodolistTitle={changeTodolistTitle}
             />
         )
 
     })
+
+	const addTodoLists = (title: string) => {
+		const newTodoListId = v1();
+		const newTodoList: TodoListType = {
+			id: newTodoListId, title, filter: 'all'
+		};
+
+		setTodoLists([...todoLists, newTodoList]);
+		setTasks({...tasks, [newTodoListId]: []})
+	}
 
 
     // const tasksForRender = getTasksForRender()
     // UI:
     return (
         <div className="App">
+			<AddItemForm addItem={addTodoLists}/>
             {todoListsComponents}
         </div>
     );
