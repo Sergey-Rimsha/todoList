@@ -3,16 +3,14 @@ import {TaskType} from "../../App";
 import {EditableSpan} from "../EditableSpan";
 
 type TaskPropsType = TaskType & {
-    todoListID: string
-    removeTask: (taskID: string, todoListID: string) => void
-    changeTaskStatus: (taskID: string, isDone: boolean, todoListID: string) => void
-    changeTaskTitle: (taskID: string, title: string, todoListID: string) => void
+    removeTask: (taskID: string) => void
+    changeTaskStatus: (taskID: string, isDone: boolean) => void
+    changeTaskTitle: (taskID: string, title: string) => void
 }
 
 const Task: React.FC<TaskPropsType> = (
     {
         id,
-        todoListID,
         title,
         isDone,
         removeTask,
@@ -23,19 +21,19 @@ const Task: React.FC<TaskPropsType> = (
     // const id = props.id
     // const isDone = props.isDone
     // const title = props.title
-    const onClickRemoveTask = () => removeTask(id, todoListID)
-    const onChangeChangeTaskStatus = (e: ChangeEvent<HTMLInputElement>) =>
-        changeTaskStatus(id, e.currentTarget.checked, todoListID);
+    const onClickRemoveTask = () => removeTask(id);
+    const onChangeHandlerTaskStatus = (e: ChangeEvent<HTMLInputElement>) =>
+        changeTaskStatus(id, e.currentTarget.checked);
 
     const changeTitle = (title: string) => {
-        changeTaskTitle(id, title, todoListID);
+        changeTaskTitle(id, title);
     }
 
     return (
         <li className={isDone ? "is-done" : ""}>
             <input
                 type="checkbox"
-                onChange={onChangeChangeTaskStatus}
+                onChange={onChangeHandlerTaskStatus}
                 checked={isDone}/>
             <EditableSpan title={title} changeTitle={changeTitle} />
             <button onClick={onClickRemoveTask}>x</button>

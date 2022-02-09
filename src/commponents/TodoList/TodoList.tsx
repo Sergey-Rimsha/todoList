@@ -6,7 +6,7 @@ import {AddItemForm} from "../AddItemForm";
 import {ButtonsBlock} from "./ButtonsBlock";
 
 type TodoListPropsType = {
-	id: string
+	todoListId: string
 	title: string
 	tasks: Array<TaskType>
 	filter: FilterValuesType
@@ -21,37 +21,56 @@ type TodoListPropsType = {
 
 export const TodoList = (props: TodoListPropsType) => {
 
+	// по нажатию кнопки филбтруем Task
+	const setFilterValue = (filter: FilterValuesType) => {
+		props.changeFilter(filter, props.todoListId)
+	}
+
+	// удаляем TodoList
+	const removeTodoList = () => props.removeTodolist(props.todoListId);
+
+	// добавляем new Task
+	const addItem = (title: string) => {
+		props.addTask(title, props.todoListId)
+	};
+
+	// удаляем Task
+	const onClickHandlerRemoveTask = (taskID: string) => {
+		props.removeTask(taskID, props.todoListId);
+	}
+
+	// изменяем статус Task true/false
+	const onChangeHandlerTaskStatus = (taskID: string, checked: boolean) => {
+		props.changeTaskStatus(taskID, checked, props.todoListId);
+	}
+
+	const onChangeHandlerTaskTitle = (taskID: string, title: string) => {
+		props.changeTaskTitle(taskID, title, props.todoListId);
+	}
+
+	// изменяем Title в TodoLIst
+	const changeTitle = (newTitle: string) => {
+		props.changeTodolistTitle(newTitle, props.todoListId)
+	}
+
+
+	// Отрисовываем Task
 	const tasksComponents = props.tasks.map(t => {
 		// как вариант в отличие от "removeTask"
 		// const changeTaskStatus = () => props.changeTaskStatus(t.id)
 		return (
 			<Task
 				key={t.id}
-				todoListID={props.id}
 				id={t.id}
 				title={t.title}
 				isDone={t.isDone}
-				removeTask={props.removeTask}
-				changeTaskStatus={props.changeTaskStatus}
-				changeTaskTitle={props.changeTaskTitle}
+				removeTask={onClickHandlerRemoveTask}
+				changeTaskStatus={onChangeHandlerTaskStatus}
+				changeTaskTitle={onChangeHandlerTaskTitle}
 
 			/>
 		)
 	})
-
-	const setFilterValue = (filter: FilterValuesType) => {
-		props.changeFilter(filter, props.id)
-	}
-
-	const removeTodoList = () => props.removeTodolist(props.id);
-
-	const addItem = (title: string) => {
-		props.addTask(title, props.id)
-	};
-
-	const changeTitle = (newTitle: string) => {
-		props.changeTodolistTitle(newTitle, props.id)
-	}
 
 
 	return (
