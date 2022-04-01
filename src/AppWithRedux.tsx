@@ -3,133 +3,150 @@ import './App.css';
 import TodoList from "./commponents/TodoList/TodoList";
 import {AddItemForm} from "./commponents/AddItemForm";
 import {
-	AddTodoListAC,
-	ChangeTodoListFilterAC,
-	ChangeTodoListTitleAC,
-	RemoveTodoListAC
+    AddTodoListAC,
+    ChangeTodoListFilterAC,
+    ChangeTodoListTitleAC,
+    RemoveTodoListAC
 } from "./commponents/store/todolist-reducer";
 import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "./commponents/store/tasks-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./commponents/store/store";
+import {Box, Container, Grid, Paper, TextField} from "@material-ui/core";
+import ButtonAppBar from "./commponents/ButtonAppBar";
 // C
 // R
 // U
 // D
 export type TaskType = {
-	id: string
-	title: string
-	isDone: boolean
+    id: string
+    title: string
+    isDone: boolean
 }
 export type TodoListType = {
-	id: string
-	title: string
-	filter: FilterValuesType
+    id: string
+    title: string
+    filter: FilterValuesType
 }
 export type TaskStateType = {
-	[todoListID: string]: Array<TaskType>
+    [todoListID: string]: Array<TaskType>
 }
 export type FilterValuesType = "all" | "active" | "completed"
 
 
 const AppWithReducers = () => {
 
-	// <AppRootStateType, TaskStateType> -- Дженерик => первый приходит тип, второй уходит тип
+    // <AppRootStateType, TaskStateType> -- Дженерик => первый приходит тип, второй уходит тип
 
-	const tasks = useSelector<AppRootStateType, TaskStateType>(state => state.tasks);
+    const tasks = useSelector<AppRootStateType, TaskStateType>(state => state.tasks);
 
-	const todoLists = useSelector<AppRootStateType, Array<TodoListType>>(state => state.todolists);
-
-
-	const dispatch = useDispatch()
-
-	// удаляем Task
-	const removeTask = (taskID: string, todoListID: string) => {
-
-		dispatch(removeTaskAC(taskID, todoListID));
-	}
-
-	// добавляем новые Task
-	const addTask = (title: string, todoListID: string) => {
-		dispatch(addTaskAC(title, todoListID));
-	}
-
-	// изменяем status y Tasks -- true/false
-	const changeTaskStatus = (taskID: string, isDone: boolean, todoListID: string) => {
-		dispatch(changeTaskStatusAC(taskID, isDone, todoListID))
-	}
-
-	// изменяем title у Tasks
-	const changeTaskTitle = (taskID: string, title: string, todoListID: string) => {
-		dispatch(changeTaskTitleAC(taskID, title, todoListID))
-	}
+    const todoLists = useSelector<AppRootStateType, Array<TodoListType>>(state => state.todolists);
 
 
+    const dispatch = useDispatch()
 
-	// удаляем Todolist
-	const removeTodolist = (todoListsID: string) => {
-		let action = RemoveTodoListAC(todoListsID);
-		dispatch(action);
-	}
+    // удаляем Task
+    const removeTask = (taskID: string, todoListID: string) => {
 
-	// изменяем title y TodoLists
-	const changeTodolistTitle = (title: string, todoListID: string) => {
-		dispatch(ChangeTodoListTitleAC(title, todoListID));
-	}
+        dispatch(removeTaskAC(taskID, todoListID));
+    }
 
-	// изменяем значение filter в TodoList на 'all' 'active' 'completed'
-	const changeFilter = (filter: FilterValuesType, todoListID: string) => {
-		dispatch(ChangeTodoListFilterAC(filter, todoListID));
-	}
+    // добавляем новые Task
+    const addTask = (title: string, todoListID: string) => {
+        dispatch(addTaskAC(title, todoListID));
+    }
 
+    // изменяем status y Tasks -- true/false
+    const changeTaskStatus = (taskID: string, isDone: boolean, todoListID: string) => {
+        dispatch(changeTaskStatusAC(taskID, isDone, todoListID))
+    }
 
-	// отображаем Task в Todolist в зависимости от установленного filter - 'all' 'active' 'completed'
-	const getTasksForRender = (todolist: TodoListType) => {
-		switch (todolist.filter) {
-			case "active":
-				return tasks[todolist.id].filter(t => !t.isDone)
-			case "completed":
-				return tasks[todolist.id].filter(t => t.isDone)
-			default:
-				return tasks[todolist.id]
-		}
-	}
-
-	// создаём новый TodoList
-	const addTodoLists = (title: string) => {
-		let action = AddTodoListAC(title);
-		dispatch(action);
-	}
+    // изменяем title у Tasks
+    const changeTaskTitle = (taskID: string, title: string, todoListID: string) => {
+        dispatch(changeTaskTitleAC(taskID, title, todoListID))
+    }
 
 
-	// Отрисовываем все TodoLists --
-	const todoListsComponents = todoLists.map(tl => {
-		const tasksForRender = getTasksForRender(tl);
-		return (
-			<TodoList
-				key={tl.id}
-				todoListId={tl.id}
-				title={tl.title}
-				tasks={tasksForRender}
-				filter={tl.filter}
-				removeTask={removeTask}
-				changeFilter={changeFilter}
-				addTask={addTask}
-				changeTaskStatus={changeTaskStatus}
-				removeTodolist={removeTodolist}
-				changeTaskTitle={changeTaskTitle}
-				changeTodolistTitle={changeTodolistTitle}
-			/>
-		)
+    // удаляем Todolist
+    const removeTodolist = (todoListsID: string) => {
+        let action = RemoveTodoListAC(todoListsID);
+        dispatch(action);
+    }
 
-	})
+    // изменяем title y TodoLists
+    const changeTodolistTitle = (title: string, todoListID: string) => {
+        dispatch(ChangeTodoListTitleAC(title, todoListID));
+    }
 
-	// UI:
-	return (
-		<div className="App">
-			<AddItemForm addItem={addTodoLists}/>
-			{todoListsComponents}
-		</div>
-	);
+    // изменяем значение filter в TodoList на 'all' 'active' 'completed'
+    const changeFilter = (filter: FilterValuesType, todoListID: string) => {
+        dispatch(ChangeTodoListFilterAC(filter, todoListID));
+    }
+
+
+    // отображаем Task в Todolist в зависимости от установленного filter - 'all' 'active' 'completed'
+    const getTasksForRender = (todolist: TodoListType) => {
+        switch (todolist.filter) {
+            case "active":
+                return tasks[todolist.id].filter(t => !t.isDone)
+            case "completed":
+                return tasks[todolist.id].filter(t => t.isDone)
+            default:
+                return tasks[todolist.id]
+        }
+    }
+
+    // создаём новый TodoList
+    const addTodoLists = (title: string) => {
+        let action = AddTodoListAC(title);
+        dispatch(action);
+    }
+
+
+    // Отрисовываем все TodoLists --
+    const todoListsComponents = todoLists.map(tl => {
+        const tasksForRender = getTasksForRender(tl);
+        return (
+            <Grid item>
+                <Paper className={'paper_todoList'}>
+                    <TodoList
+                        key={tl.id}
+                        todoListId={tl.id}
+                        title={tl.title}
+                        tasks={tasksForRender}
+                        filter={tl.filter}
+                        removeTask={removeTask}
+                        changeFilter={changeFilter}
+                        addTask={addTask}
+                        changeTaskStatus={changeTaskStatus}
+                        removeTodolist={removeTodolist}
+                        changeTaskTitle={changeTaskTitle}
+                        changeTodolistTitle={changeTodolistTitle}
+                    />
+                </Paper>
+            </Grid>
+
+        )
+
+    })
+
+
+    // UI:
+    return (
+        <div className="App">
+            <ButtonAppBar/>
+            <Container fixed>
+                <Grid container item xs={12} spacing={1}>
+                    <Paper className={'paper_todoList'}>
+                        <AddItemForm addItem={addTodoLists}/>
+                    </Paper>
+                    <Grid container item xs={12} spacing={1}>
+                        {todoListsComponents}
+                    </Grid>
+                </Grid>
+            </Container>
+
+        </div>
+    );
 }
 
 export default AppWithReducers;
