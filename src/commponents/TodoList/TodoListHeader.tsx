@@ -1,6 +1,10 @@
 import React from 'react';
-import Button from "../Button";
+// import Button from "../Button";
 import {EditableSpan} from "../EditableSpan";
+import Button from '@material-ui/core/Button';
+import {Tooltip} from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from '@material-ui/icons/Delete';
 
 type TodoListHeaderPropsType = {
     title: string
@@ -13,7 +17,12 @@ const TodoListHeader: React.FC<TodoListHeaderPropsType> = (props) => {
     return (
         <h3>
             <EditableSpan title={props.title} changeTitle={props.changeTitle} />
-            <Button title={'X'} active={true} onClickHandler={props.removeTodoList}/>
+            <Tooltip title="Delete">
+                <IconButton aria-label="delete">
+                    <DeleteIcon onClick={() => props.removeTodoList()} />
+                </IconButton>
+            </Tooltip>
+
         </h3>
     )
 };

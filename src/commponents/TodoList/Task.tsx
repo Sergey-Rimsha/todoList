@@ -1,6 +1,9 @@
 import React, {ChangeEvent} from 'react';
 import {TaskType} from "../../App";
 import {EditableSpan} from "../EditableSpan";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import {Checkbox, FormControlLabel, Tooltip} from "@material-ui/core";
 
 type TaskPropsType = TaskType & {
     removeTask: (taskID: string) => void
@@ -30,14 +33,30 @@ const Task: React.FC<TaskPropsType> = (
     }
 
     return (
-        <li className={isDone ? "is-done" : ""}>
-            <input
-                type="checkbox"
-                onChange={onChangeHandlerTaskStatus}
-                checked={isDone}/>
-            <EditableSpan title={title} changeTitle={changeTitle} />
-            <button onClick={onClickRemoveTask}>x</button>
-        </li>
+        <div className={isDone ? "is-done" : ""}>
+
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={isDone}
+                        onChange={onChangeHandlerTaskStatus}
+                        color="primary"
+                        name={title}
+                    />
+                }
+                label={<EditableSpan title={title} changeTitle={changeTitle} />}
+            />
+            {/*<input*/}
+            {/*    type="checkbox"*/}
+            {/*    onChange={onChangeHandlerTaskStatus}*/}
+            {/*    checked={isDone}/>*/}
+            {/*<EditableSpan title={title} changeTitle={changeTitle} />*/}
+            <Tooltip title="Delete">
+                <IconButton aria-label="delete">
+                    <DeleteIcon onClick={onClickRemoveTask} />
+                </IconButton>
+            </Tooltip>
+        </div>
     );
 };
 

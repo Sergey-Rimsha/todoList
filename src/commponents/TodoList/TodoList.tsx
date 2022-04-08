@@ -81,7 +81,6 @@ export const TodoList = (props: TodoListPropsType) => {
 				changeTitle={changeTitle}/>
 			<div>
 				<AddItemForm addItem={addItem}/>
-
 			</div>
 			<ul>
 				{tasksComponents}
