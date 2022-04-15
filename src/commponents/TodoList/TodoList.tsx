@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import TodoListHeader from "./TodoListHeader";
 import {FilterValuesType, TaskType} from "../../App";
 import Task from "./Task";
@@ -19,43 +19,58 @@ type TodoListPropsType = {
 	changeTodolistTitle:(title: string, todoListID: string) => void
 }
 
-export const TodoList = (props: TodoListPropsType) => {
+export const TodoList = React.memo((props: TodoListPropsType) => {
+
+	console.log('todolist is called')
 
 	// по нажатию кнопки филбтруем Task
-	const setFilterValue = (filter: FilterValuesType) => {
+	const setFilterValue = useCallback((filter: FilterValuesType) => {
 		props.changeFilter(filter, props.todoListId)
-	}
+	},[props.changeFilter, props.todoListId]);
 
 	// удаляем TodoList
-	const removeTodoList = () => props.removeTodolist(props.todoListId);
+	const removeTodoList = useCallback(() => {
+		props.removeTodolist(props.todoListId)
+	},[props.removeTodolist, props.todoListId]);
 
 	// добавляем new Task
-	const addItem = (title: string) => {
+	const addItem = useCallback((title: string) => {
 		props.addTask(title, props.todoListId)
-	};
+	},[props.addTask, props.todoListId]);
 
 	// удаляем Task
-	const onClickHandlerRemoveTask = (taskID: string) => {
+	const onClickHandlerRemoveTask = useCallback((taskID: string) => {
 		props.removeTask(taskID, props.todoListId);
-	}
+	},[props.removeTask, props.todoListId]);
 
 	// изменяем статус Task true/false
-	const onChangeHandlerTaskStatus = (taskID: string, checked: boolean) => {
+	const onChangeHandlerTaskStatus = useCallback((taskID: string, checked: boolean) => {
 		props.changeTaskStatus(taskID, checked, props.todoListId);
-	}
+	},[props.changeTaskStatus, props.todoListId]);
 
-	const onChangeHandlerTaskTitle = (taskID: string, title: string) => {
+	const onChangeHandlerTaskTitle = useCallback((taskID: string, title: string) => {
 		props.changeTaskTitle(taskID, title, props.todoListId);
-	}
+	},[props.changeTaskTitle, props.todoListId]);
 
 	// изменяем Title в TodoLIst
-	const changeTitle = (newTitle: string) => {
+	const changeTitle = useCallback((newTitle: string) => {
 		props.changeTodolistTitle(newTitle, props.todoListId)
-	}
+	},[props.changeTodolistTitle, props.todoListId]);
 
+
+	const getTasksForRender = (tasks: Array<TaskType>) => {
+		switch (props.filter) {
+			case "active":
+				return tasks.filter(t => !t.isDone)
+			case "completed":
+				return tasks.filter(t => t.isDone)
+			default:
+				return tasks
+		}
+	};
 
 	// Отрисовываем Task
-	const tasksComponents = props.tasks.map(t => {
+	const tasksComponents = getTasksForRender(props.tasks).map(t => {
 		// как вариант в отличие от "removeTask"
 		// const changeTaskStatus = () => props.changeTaskStatus(t.id)
 		return (
@@ -91,6 +106,6 @@ export const TodoList = (props: TodoListPropsType) => {
 				setFilterValue={setFilterValue}/>
 		</div>
 	);
-};
+});
 
 export default TodoList;

@@ -27,22 +27,6 @@ export const ButtonsBlock = (props: ButtonsBlockPropsType) => {
 				size={'small'}
 				color={"primary"}
 				onClick={() => props.setFilterValue('completed')}>completed</Button>
-
-			{/*<Button*/}
-			{/*	active={props.filter === "all"}*/}
-			{/*	title={"All"}*/}
-			{/*	onClickHandler={()=> props.setFilterValue('all')}*/}
-			{/*/>*/}
-			{/*<Button*/}
-			{/*	active={props.filter === "active"}*/}
-			{/*	title={"Active"}*/}
-			{/*	onClickHandler={()=> props.setFilterValue('active')}*/}
-			{/*/>*/}
-			{/*<Button*/}
-			{/*	active={props.filter === "completed"}*/}
-			{/*	title={"Completed"}*/}
-			{/*	onClickHandler={()=> props.setFilterValue('completed')}*/}
-			{/*/>*/}
 		</div>
 	)
 }

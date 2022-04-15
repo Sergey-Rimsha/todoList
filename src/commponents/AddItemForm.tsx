@@ -1,24 +1,24 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 // import Button from "./Button";
-import {Fab, TextField, Tooltip} from "@material-ui/core";
-import AddIcon from '@material-ui/icons/Add';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import {TextField} from "@material-ui/core";
+import {AddBox} from "@material-ui/icons";
+import IconButton from "@material-ui/core/IconButton";
 
 type AddItemFormType = {
     addItem: (title: string) => void
 }
 
-export const AddItemForm = (props: AddItemFormType) => {
+export const AddItemForm = React.memo((props: AddItemFormType) => {
+
+    console.log('addItemForm is called');
 
     const [title, setTitle] = useState<string>("");
-
     const [error, setError] = useState<boolean>(false);
-
 
     const onKeyPressAddItem = (e: KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && onClickAddItem();
     const onChangeSetTitle = (e: ChangeEvent<HTMLInputElement>) => {
+        if (error) setError(false);
         setTitle(e.currentTarget.value)
-        setError(false)
     };
 
     const onClickAddItem = () => {
@@ -37,20 +37,6 @@ export const AddItemForm = (props: AddItemFormType) => {
         : null;
 
 
-    const useStyles = makeStyles((theme: Theme) =>
-        createStyles({
-            fab: {
-                margin: theme.spacing(1),
-            },
-            absolute: {
-                position: 'absolute',
-                bottom: theme.spacing(2),
-                right: theme.spacing(3),
-            },
-        }),
-    );
-    const classes = useStyles();
-
     return (
 
         <div>
@@ -62,26 +48,12 @@ export const AddItemForm = (props: AddItemFormType) => {
                 // size="small"
                 label="Title"
                 variant="outlined"/>
-            <Tooltip title="Add" aria-label="add">
-                <Fab color="primary" size="small" className={classes.fab}>
-                    <AddIcon onClick={() => onClickAddItem()} />
-                </Fab>
-            </Tooltip>
 
-            {/*<Button onClick={() => onClickAddItem()} variant="contained" color="secondary">*/}
-            {/*    +*/}
-            {/*</Button>*/}
-
+            <IconButton color="primary" onClick={()=>onClickAddItem()}>
+                <AddBox />
+            </IconButton>
             {errorMessage}
 
-            {/*<input*/}
-            {/*	value={title}*/}
-            {/*	onChange={onChangeSetTitle}*/}
-            {/*	onKeyPress={onKeyPressAddItem}*/}
-            {/*	className={error ? "error" : ""}*/}
-            {/*/>*/}
-
-            {/*<Button active={true} title={'+'} onClickHandler={onClickAddItem}/>*/}
         </div>
     )
-}
+})

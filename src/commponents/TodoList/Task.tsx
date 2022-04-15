@@ -11,7 +11,7 @@ type TaskPropsType = TaskType & {
     changeTaskTitle: (taskID: string, title: string) => void
 }
 
-const Task: React.FC<TaskPropsType> = (
+const Task: React.FC<TaskPropsType> = React.memo((
     {
         id,
         title,
@@ -46,11 +46,6 @@ const Task: React.FC<TaskPropsType> = (
                 }
                 label={<EditableSpan title={title} changeTitle={changeTitle} />}
             />
-            {/*<input*/}
-            {/*    type="checkbox"*/}
-            {/*    onChange={onChangeHandlerTaskStatus}*/}
-            {/*    checked={isDone}/>*/}
-            {/*<EditableSpan title={title} changeTitle={changeTitle} />*/}
             <Tooltip title="Delete">
                 <IconButton aria-label="delete">
                     <DeleteIcon onClick={onClickRemoveTask} />
@@ -58,7 +53,7 @@ const Task: React.FC<TaskPropsType> = (
             </Tooltip>
         </div>
     );
-};
+});
 
 export default Task;
 
