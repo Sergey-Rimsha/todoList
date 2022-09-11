@@ -14,8 +14,8 @@ export const loginTC = createAsyncThunk('auth/login', async (data: LoginParamsTy
         } else {
             handleServerAppError(res.data, thunkAPI.dispatch)
         }
-    } catch (error: any) {
-        handleServerNetworkError(error, thunkAPI.dispatch)
+    } catch (error) {
+        handleServerNetworkError({message: 'error'}, thunkAPI.dispatch)
     }
 })
 
@@ -29,8 +29,8 @@ export const logoutTC = createAsyncThunk('auth/logout', async (arg, thunkAPI) =>
         } else {
             handleServerAppError(res.data, thunkAPI.dispatch)
         }
-    } catch (error: any) {
-        handleServerNetworkError(error, thunkAPI.dispatch)
+    } catch (error) {
+        handleServerNetworkError({message: 'error'}, thunkAPI.dispatch)
     }
 
 })
