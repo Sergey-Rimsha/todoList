@@ -1,4 +1,10 @@
-import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType} from '../../api/todolists-api'
+import {
+	TaskPriorities,
+	TaskStatuses,
+	TaskType,
+	todolistsAPI,
+	UpdateTaskModelType
+} from '../../api/todolists-api'
 import {setAppStatusAC} from '../../app/app-reducer'
 import {handleServerAppError, handleServerNetworkError} from '../../utils/error-utils';
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
@@ -18,6 +24,7 @@ export type TasksStateType = {
 	[key: string]: Array<TaskType>
 }
 
+//thunkCreators
 export const fetchTasksTC = createAsyncThunk('tasks/fetchTasks', async (todolistId: string, thunkAPI) => {
 	thunkAPI.dispatch(setAppStatusAC({status: 'loading'}));
 	const res = await todolistsAPI.getTasks(todolistId);
@@ -37,8 +44,7 @@ export const addTaskTC = createAsyncThunk('task/addTask', async (payload: { titl
 		const res = await todolistsAPI.createTask(payload.todolistId, payload.title);
 		if (res.data.resultCode === 0) {
 			const task = res.data.data.item
-			const action = addTaskAC(task)
-			thunkAPI.dispatch(action)
+			thunkAPI.dispatch(addTaskAC(task))
 			thunkAPI.dispatch(setAppStatusAC({status: 'succeeded'}))
 		} else {
 			handleServerAppError(res.data, thunkAPI.dispatch);
