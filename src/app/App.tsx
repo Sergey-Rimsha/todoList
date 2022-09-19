@@ -11,37 +11,34 @@ import {
     Typography
 } from '@material-ui/core'
 import {Menu} from '@material-ui/icons'
-import {TodolistsList} from '../features/TodolistsList'
+import {TodolistsList} from '../features/TodolistsList/TodolistsList'
 import {ErrorSnackbar} from '../components/ErrorSnackbar/ErrorSnackbar'
 import {useDispatch, useSelector} from 'react-redux'
-import {appActions} from '../features/Application'
-import {Route} from 'react-router-dom'
-import {authActions, Login} from '../features/Auth'
-import {selectIsInitialized, selectStatus} from '../features/Application/selectors'
-import {authSelectors} from '../features/Auth'
-import {useActions} from '../utils/redux-utils'
+import {AppRootStateType} from './store'
+import {initializeAppTC, RequestStatusType} from './app-reducer'
+import {BrowserRouter, Route} from 'react-router-dom'
+import {Login} from '../features/Login/Login'
+import {logoutTC} from '../features/Login/auth-reducer'
 
 type PropsType = {
     demo?: boolean
 }
 
 function App({demo = false}: PropsType) {
-    const status = useSelector(selectStatus)
-    const isInitialized = useSelector(selectIsInitialized)
-    const isLoggedIn = useSelector(authSelectors.selectIsLoggedIn)
-
-    const {logout} = useActions(authActions)
-    const {initializeApp} = useActions(appActions)
+    const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.app.status)
+    const isInitialized = useSelector<AppRootStateType, boolean>((state) => state.app.isInitialized)
+    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        if (!demo) {
-            initializeApp()
+        if(!demo) {
+            dispatch(initializeAppTC())
         }
-    }, [])
+    }, [demo, dispatch])
 
     const logoutHandler = useCallback(() => {
-        logout()
-    }, [])
+        dispatch(logoutTC())
+    }, [dispatch])
 
     if (!isInitialized) {
         return <div
@@ -51,25 +48,25 @@ function App({demo = false}: PropsType) {
     }
 
     return (
-            <div className="App">
-                <ErrorSnackbar/>
-                <AppBar position="static">
-                    <Toolbar>
-                        <IconButton edge="start" color="inherit" aria-label="menu">
-                            <Menu/>
-                        </IconButton>
-                        <Typography variant="h6">
-                            News
-                        </Typography>
-                        {isLoggedIn && <Button color="inherit" onClick={logoutHandler}>Log out</Button>}
-                    </Toolbar>
-                    {status === 'loading' && <LinearProgress/>}
-                </AppBar>
-                <Container fixed>
-                    <Route exact path={'/'} render={() => <TodolistsList demo={demo}/>}/>
-                    <Route path={'/login'} render={() => <Login/>}/>
-                </Container>
-            </div>
+        <div className="App">
+            <ErrorSnackbar/>
+            <AppBar position="static">
+                <Toolbar>
+                    <IconButton edge="start" color="inherit" aria-label="menu">
+                        <Menu/>
+                    </IconButton>
+                    <Typography variant="h6">
+                        News
+                    </Typography>
+                    {isLoggedIn && <Button color="inherit" onClick={logoutHandler}>Log out</Button>}
+                </Toolbar>
+                {status === 'loading' && <LinearProgress/>}
+            </AppBar>
+            <Container fixed>
+                <Route exact path={'/'} render={() => <TodolistsList demo={demo}/>}/>
+                <Route path={'/login'} render={() => <Login/>}/>
+            </Container>
+        </div>
     )
 }
 

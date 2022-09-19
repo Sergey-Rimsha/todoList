@@ -1,10 +1,10 @@
 /*
-.Application {
+.App {
   padding: 30px;
   display: flex;
 }
 
-.Application > div {
+.App > div {
   margin-right: 50px;
 }
 
